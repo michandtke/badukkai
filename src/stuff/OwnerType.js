@@ -1,0 +1,1 @@
+export const owner_type = {"empty": 1, "black": 2, "white": 3}

@@ -1,6 +1,6 @@
-import logo from './logo.svg';
 import './App.css';
 import Board from './stuff/Board.js'
+import React from "react";
 
 function App() {
   return (
