@@ -20,7 +20,8 @@ export default function Board(props) {
                 <tr className={classes.cell} key={rowNumber = rowNumber + 1}>
                     {row.map((cell) => (
                         <td className={classes.cell} key={cell.id}>
-                            <ImageProvider ownerType={cell.owner} cellType={cell.cellType} key={cell.id}/>
+                            <ImageProvider ownerType={cell.owner} cellType={cell.cellType} key={cell.id}
+                                           clicked={() => props.clicked(cell.id)}/>
                         </td>
                     ))}
                 </tr>

@@ -38,7 +38,7 @@ const useStyles = makeStyles((theme) => ({
 
 export default function ImageProvider(props) {
     const classes = useStyles();
-    return (<img src={image(props.ownerType, props.cellType)} className={classes.inlineImage} alt={"Hello"}/>)
+    return (<img src={image(props.ownerType, props.cellType)} className={classes.inlineImage} onClick={props.clicked} alt={"Hello"}/>)
 }
 
 function image(ownerType, cellType) {
