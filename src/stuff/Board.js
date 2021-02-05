@@ -13,18 +13,18 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function Board() {
+export default function Board(props) {
     const classes = useStyles();
 
-    const board_type = 9
+    const rows = build_rows(props.boardType)
 
-    const rows = build_rows(board_type)
+    let rowNumber = 0
 
     return (
         <table cellSpacing={0}>
             <tbody>
             {rows.map((row) => (
-                <tr className={classes.cell}>
+                <tr className={classes.cell} key={rowNumber = rowNumber + 1}>
                     {row.map((cell) => (
                         <td className={classes.cell} key={cell.id}>
                             <ImageProvider ownerType={cell.owner} cellType={cell.cellType} key={cell.id}/>
@@ -55,6 +55,7 @@ function build_rows(board_type) {
             row.push(new Owner(i, cell_type.middle))
 
     rows.push(last_row(board_type, number_of_places))
+
     return rows
 }
 
