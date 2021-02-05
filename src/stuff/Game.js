@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Board from "./Board";
 import {Button} from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
+import build_rows from "./RowFactory";
 
 const player = {
     "black": 1,
@@ -17,6 +18,8 @@ export default function Game() {
     else
         nextPlayer = player.black
 
+    const rows = build_rows(boardType)
+
     return (<div>
         Hello, my darling. Have a great game. And please, have fun playing it.
         <br />It is {named(currentPlayer)}'s turn to play.
@@ -24,7 +27,7 @@ export default function Game() {
         <Button onClick={() => setCurrentPlayer(nextPlayer)}>Click</Button>
         <br />
         <TextField onChange={(event) => boardSizeChange(event, setBoardType)}>Hello.</TextField>
-        <Board boardType={boardType}/>
+        <Board rows={rows}/>
     </div>)
 }
 
