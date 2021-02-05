@@ -1,12 +1,12 @@
 import './App.css';
-import Board from './stuff/Board.js'
 import React from "react";
+import Game from "./stuff/Game";
 
 function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <Board />
+        <Game />
       </header>
     </div>
   );
