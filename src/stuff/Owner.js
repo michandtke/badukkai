@@ -7,4 +7,8 @@ export default class Owner {
         this.owner = owner
         this.cellType = cellType
     }
+
+    toString() {
+        return "Owner(id: " + this.id + ", owner: " + this.owner + ", cellType: " + this.cellType + ")"
+    }
 }

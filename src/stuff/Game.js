@@ -6,6 +6,7 @@ import build_rows from "./RowFactory";
 import Owner from "./Owner";
 import {owner_type} from "./OwnerType";
 import {makeStyles} from "@material-ui/core/styles";
+import capturer from "./Capturer";
 
 
 const player = {
@@ -40,11 +41,11 @@ export default function Game() {
     }
 
 
-
     return (<div>
-        Hello, friend. Have a great game. And please, have fun playing it.
+        Hello, my friend. Have a great game. And please, have fun playing it.
         <br/>
-        <Button onClick={() => moveMade(currentPlayer, setCurrentPlayer)} variant="contained" color="primary">PASS</Button>
+        <Button onClick={() => moveMade(currentPlayer, setCurrentPlayer)} variant="contained"
+                color="primary">PASS</Button>
         <br/>
         Create a new Game in size: <TextField
         onChange={(event) => newGame(event, setRows, setCurrentPlayer)}>Hello.</TextField>
@@ -72,21 +73,26 @@ function newGame(event, setRows, setCurrentPlayer) {
 }
 
 function clicked(id, rows, setRows, currentPlayer, nextPlayer) {
-    setRows(replaceIdWithCurrentPlayer(id, rows, currentPlayer, nextPlayer))
+    let madeLegitMove = false
+    let newRows = replaceIdWithCurrentPlayer(id, rows, currentPlayer, nextPlayer, () => madeLegitMove = true)
+    if (madeLegitMove)
+        newRows = capturer(id, newRows)
+    setRows(newRows)
 }
 
-function replaceIdWithCurrentPlayer(id, rows, currentPlayer, nextPlayer) {
-    return rows.map(row => row.map(cell => replaceIfClicked(cell, id, currentPlayer, nextPlayer)))
+function replaceIdWithCurrentPlayer(id, rows, currentPlayer, nextPlayer, madeLegitMove) {
+    return rows.map(row => row.map(cell => replaceIfClicked(cell, id, currentPlayer, nextPlayer, madeLegitMove)))
 }
 
-function replaceIfClicked(cell, id, currentPlayer, nextPlayer) {
-    if (cell.id === id && cell.owner === owner_type.empty)
+function replaceIfClicked(cell, id, currentPlayer, nextPlayer, madeLegitMove) {
+    if (cell.id === id && cell.owner === owner_type.empty) {
+        nextPlayer()
+        madeLegitMove()
         if (currentPlayer === player.black) {
-            nextPlayer()
             return new Owner(cell.id, cell.cellType, owner_type.black)
         } else {
-            nextPlayer()
             return new Owner(cell.id, cell.cellType, owner_type.white)
         }
+    }
     return cell
 }
