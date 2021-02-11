@@ -6,29 +6,32 @@ import {owner_type} from "./OwnerType";
 test('no stone on first line should change nothing', () => {
     // given
     const id = 0
-    const rows = black(id, build_rows(3))
+    const rows = smallBoard().black(id).state()
 
     // when + then
-    expect(capturer(id, rows, () => {})).toStrictEqual(rows)
+    expect(capturer(id, rows, () => {
+    })).toStrictEqual(rows)
 })
 
 test('no stone on last line should change nothing', () => {
     // given
     const id = 3 * 3 - 1
-    const rows = black(id, build_rows(3))
+    const rows = smallBoard().black(id).state()
 
     // when + then
-    expect(capturer(id, rows, () => {})).toStrictEqual(rows)
+    expect(capturer(id, rows, () => {
+    })).toStrictEqual(rows)
 })
 
 test('should be able to capture top left corner', () => {
     // given
     const id = 3
-    const rows = black(id, white(0, black(1, build_rows(3))))
-    const rowsWithoutWhite = black(id, black(1, build_rows(3)))
+    const rows = smallBoard().black(1).white(0).black(id).state()
+    const rowsWithoutWhite = smallBoard().black(1).black(id).state()
 
     // when
-    const result = capturer(id, rows, () => {})
+    const result = capturer(id, rows, () => {
+    })
 
     // then
     expect(result).toStrictEqual(rowsWithoutWhite)
@@ -37,11 +40,12 @@ test('should be able to capture top left corner', () => {
 test('should be able to capture top right corner', () => {
     // given
     const id = 1
-    const rows = black(id, white(2, black(5, build_rows(3))))
-    const rowsWithoutWhite = black(id, black(5, build_rows(3)))
+    const rows = smallBoard().black(5).white(2).black(id).state()
+    const rowsWithoutWhite = smallBoard().black(5).black(id).state()
 
     // when
-    const result = capturer(id, rows, () => {})
+    const result = capturer(id, rows, () => {
+    })
 
     // then
     expect(result).toStrictEqual(rowsWithoutWhite)
@@ -50,11 +54,12 @@ test('should be able to capture top right corner', () => {
 test('should be able to capture bottom left corner', () => {
     // given
     const id = 3
-    const rows = black(id, white(6, black(7, build_rows(3))))
-    const rowsWithoutWhite = black(id, black(7, build_rows(3)))
+    const rows = smallBoard().black(7).white(6).black(id).state()
+    const rowsWithoutWhite = smallBoard().black(7).black(id).state()
 
     // when
-    const result = capturer(id, rows, () => {})
+    const result = capturer(id, rows, () => {
+    })
 
     // then
     expect(result).toStrictEqual(rowsWithoutWhite)
@@ -63,11 +68,12 @@ test('should be able to capture bottom left corner', () => {
 test('should be able to capture bottom right corner', () => {
     // given
     const id = 7
-    const rows = black(id, white(8, black(5, build_rows(3))))
-    const rowsWithoutWhite = black(id, black(5, build_rows(3)))
+    const rows = smallBoard().black(5).white(8).black(id).state()
+    const rowsWithoutWhite = smallBoard().black(5).black(id).state()
 
     // when
-    const result = capturer(id, rows, () => {})
+    const result = capturer(id, rows, () => {
+    })
 
     // then
     expect(result).toStrictEqual(rowsWithoutWhite)
@@ -76,11 +82,12 @@ test('should be able to capture bottom right corner', () => {
 test('should be able to capture in the middle', () => {
     // given
     const id = 5
-    const rows = black(id, white(4, black(3, black(7, black(1, build_rows(3))))))
-    const rowsWithoutWhite = black(id, black(3, black(7, black(1, build_rows(3)))))
+    const rows = smallBoard().black(1).black(7).black(3).white(4).black(5).state()
+    const rowsWithoutWhite = smallBoard().black(1).black(7).black(3).black(id).state()
 
     // when
-    const result = capturer(id, rows, () => {})
+    const result = capturer(id, rows, () => {
+    })
 
     // then
     expect(result).toStrictEqual(rowsWithoutWhite)
@@ -89,10 +96,11 @@ test('should be able to capture in the middle', () => {
 test('should not capture if top is empty', () => {
     // given
     const id = 5
-    const rows = black(id, white(4, black(3, black(7, build_rows(3)))))
+    const rows = smallBoard().black(7).black(3).white(4).black(id).state()
 
     // when
-    const result = capturer(id, rows, () => {})
+    const result = capturer(id, rows, () => {
+    })
 
     // then
     expect(result).toStrictEqual(rows)
@@ -102,7 +110,7 @@ test('should call capture count function with 0 when captured nothing', () => {
     // given
     // given
     const id = 5
-    const rows = black(id, white(4, black(3, black(7, build_rows(3)))))
+    const rows = smallBoard().black(7).black(3).white(4).black(id).state()
     let captureCount = 0
     let captureCalled = false
 
@@ -120,7 +128,7 @@ test('should call capture count function with 0 when captured nothing', () => {
 test('should call capture count function when captured something', () => {
     // given
     const id = 3
-    const rows = black(id, white(0, black(1, build_rows(3))))
+    const rows = smallBoard().black(1).white(0).black(id).state()
     let captureCount = 0
     let captureCalled = false
 
@@ -135,18 +143,34 @@ test('should call capture count function when captured something', () => {
     expect(captureCalled).toBe(true)
 })
 
-function black(id, rows) {
-    return play(id, rows, owner_type.black)
+function smallBoard() {
+    return new PlayBuilder(3)
 }
 
-function white(id, rows) {
-    return play(id, rows, owner_type.white)
-}
+class PlayBuilder {
+    constructor(boardType) {
+        this.rows = build_rows(boardType)
+    }
 
-function play(id, rows, color) {
-    return rows.map(row => row.map(cell => {
-        if (cell.id === id)
-            return new Owner(cell.id, cell.cellType, color)
-        return cell
-    }))
+    white(id) {
+        this.rows = this.play(id, this.rows, owner_type.white)
+        return this
+    }
+
+    black(id) {
+        this.rows = this.play(id, this.rows, owner_type.black)
+        return this
+    }
+
+    play(id, rows, color) {
+        return rows.map(row => row.map(cell => {
+            if (cell.id === id)
+                return new Owner(cell.id, cell.cellType, color)
+            return cell
+        }))
+    }
+
+    state() {
+        return this.rows
+    }
 }
