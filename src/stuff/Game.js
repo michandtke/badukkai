@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, {useState} from "react";
 import Board from "./Board";
 import {Button} from "@material-ui/core";
 import TextField from "@material-ui/core/TextField";
 import build_rows from "./RowFactory";
 import Owner from "./Owner";
 import {owner_type} from "./OwnerType";
+import {makeStyles} from "@material-ui/core/styles";
 
 
 const player = {
@@ -12,31 +13,56 @@ const player = {
     "white": 2
 }
 
+
+const useStyles = makeStyles((theme) => ({
+    container: {
+        display: "flex"
+    },
+    player: {
+        padding: "40px"
+    },
+    current: {
+        border: "solid"
+    }
+}));
+
 export default function Game() {
     const [currentPlayer, setCurrentPlayer] = useState(player.black)
     const [rows, setRows] = useState(build_rows(3))
-    let nextPlayer;
-    if (currentPlayer === player.black)
-        nextPlayer = player.white
-    else
-        nextPlayer = player.black
+    const styles = useStyles()
+    let stylingBlack = styles.player
+    let stylingWhite = styles.player
+
+    if (currentPlayer === player.black) {
+        stylingBlack += " " + styles.current
+    } else {
+        stylingWhite += " " + styles.current
+    }
+
+
 
     return (<div>
-        Hello, my darling. Have a great game. And please, have fun playing it.
-        <br />It is {named(currentPlayer)}'s turn to play.
-        <Button onClick={() => setCurrentPlayer(nextPlayer)} variant="contained" color="primary">PASS</Button>
-        <br />
-        Create a new Game in size: <TextField onChange={(event) => newGame(event, setRows, setCurrentPlayer)}>Hello.</TextField>
-        <Board rows={rows} clicked={(id) => clicked(id, rows, setRows, currentPlayer, () => setCurrentPlayer(nextPlayer))}/>
+        Hello, friend. Have a great game. And please, have fun playing it.
+        <br/>
+        <Button onClick={() => moveMade(currentPlayer, setCurrentPlayer)} variant="contained" color="primary">PASS</Button>
+        <br/>
+        Create a new Game in size: <TextField
+        onChange={(event) => newGame(event, setRows, setCurrentPlayer)}>Hello.</TextField>
+        <div className={styles.container}>
+            <div className={stylingBlack}>Black</div>
+            <Board rows={rows}
+                   clicked={(id) => clicked(id, rows, setRows, currentPlayer, () => moveMade(currentPlayer, setCurrentPlayer))}/>
+            <div className={stylingWhite}>White</div>
+        </div>
     </div>)
 }
 
-function named(currentPlayer) {
+function moveMade(currentPlayer, setCurrentPlayer) {
     if (currentPlayer === player.black)
-        return "Black"
-    return "White"
+        setCurrentPlayer(player.white)
+    else
+        setCurrentPlayer(player.black)
 }
-
 
 function newGame(event, setRows, setCurrentPlayer) {
     if (event.target.value >= 2) {
