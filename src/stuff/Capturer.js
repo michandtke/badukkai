@@ -2,18 +2,14 @@ import {owner_type} from "./OwnerType";
 import Owner from "./Owner";
 
 export default function capturer(id, rows, captured) {
-    return removeCapturedStones(id, rows, captured)
-}
-
-
-function removeCapturedStones(id, rows, captured) {
     const toCheck = potentiallyCapturedStones(id, rows)
-    const checked = []
 
-    const toRemove = toCheck.map((cell) => check(cell, rows)).filter(x => x !== undefined)
+    const toRemove = [...new Set(toCheck.flatMap((cell) => check(cell, rows))
+        .filter(x => x !== undefined)
+        .map(ce => ce.id))]
 
     const result = rows.map(row => row.map(cell => {
-        if (toRemove.includes(cell))
+        if (toRemove.includes(cell.id))
             return new Owner(cell.id, cell.cellType, owner_type.empty)
         return cell
     }))
@@ -75,14 +71,46 @@ function cellAtId(id, rows) {
 }
 
 function check(cell, rows) {
-    const toRemove = ((cell.owner === owner_type.black) ? owner_type.white : owner_type.black);
+    const all = island(cell, rows, [cell])
+
+    const neighbour = all.flatMap(ce => neighbours(ce, rows))
+    const foreign = neighbour.filter(ce => ce.owner !== cell.owner)
+    const owners = foreign.map(ce => ce.owner)
+    const free = owners.includes(owner_type.empty)
+    const takeThemAll = !free
+
+    return takeThemAll ? all : []
+}
+
+function island(cell, rows, known) {
     const right = rightNeighbour(cell.id, rows)
     const bottom = bottomNeighbour(cell.id, rows)
     const top = topNeighbour(cell.id, rows)
     const left = leftNeighbour(cell.id, rows)
-    if (((bottom === undefined) || (bottom.owner === toRemove)) &&
-        ((top === undefined) || (top.owner === toRemove)) &&
-        ((right === undefined) || (right.owner === toRemove)) &&
-        ((left === undefined) || (left.owner === toRemove)))
-        return cell
+
+    const recent = []
+    if (right && right.owner === cell.owner && !known.includes(right))
+        recent.push(right)
+    if (bottom && bottom.owner === cell.owner && !known.includes(bottom))
+        recent.push(bottom)
+    if (top && top.owner === cell.owner && !known.includes(top))
+        recent.push(top)
+    if (left && left.owner === cell.owner && !known.includes(left))
+        recent.push(left)
+    known.push(...recent)
+    recent.map(ce => island(ce, rows, known))
+    return known
+}
+
+function neighbours(cell, rows) {
+    const right = rightNeighbour(cell.id, rows)
+    const bottom = bottomNeighbour(cell.id, rows)
+    const top = topNeighbour(cell.id, rows)
+    const left = leftNeighbour(cell.id, rows)
+    const hello = []
+    if (right) hello.push(right)
+    if (bottom) hello.push(bottom)
+    if (top) hello.push(top)
+    if (left) hello.push(left)
+    return hello
 }

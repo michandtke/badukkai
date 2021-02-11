@@ -143,6 +143,37 @@ test('should call capture count function when captured something', () => {
     expect(captureCalled).toBe(true)
 })
 
+test('should be able to capture two stones in the top left corner', () => {
+    // given
+    const id = 4
+    const rows = smallBoard().white(0).white(1).black(2).black(3).black(id).state()
+    const rowsWithoutWhite = smallBoard().black(2).black(3).black(id).state()
+
+    // when
+    const result = capturer(id, rows, () => {})
+
+    // then
+    expect(result).toStrictEqual(rowsWithoutWhite)
+})
+
+test('should count all the captures', () => {
+    // given
+    const id = 4
+    const rows = smallBoard().white(0).white(1).black(2).black(3).black(id).state()
+    let captureCount = 0
+    let captureCalled = false
+
+    // when
+    capturer(id, rows, (captured) => {
+        captureCount = captured
+        captureCalled = true
+    })
+
+    // then
+    expect(captureCount).toBe(2)
+    expect(captureCalled).toBe(true)
+})
+
 function smallBoard() {
     return new PlayBuilder(3)
 }
