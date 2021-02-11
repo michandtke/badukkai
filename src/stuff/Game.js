@@ -20,24 +20,33 @@ const useStyles = makeStyles((theme) => ({
         display: "flex"
     },
     player: {
-        padding: "40px"
-    },
-    current: {
+        padding: "40px",
         border: "solid"
+    },
+    current: {},
+    inactive: {
+        borderColor: "#282c34"
     }
+
 }));
 
 export default function Game() {
     const [currentPlayer, setCurrentPlayer] = useState(player.black)
     const [rows, setRows] = useState(build_rows(3))
+    const [captureCountBlack, setCaptureCountBlack] = useState(0)
+    const [captureCountWhite, setCaptureCountWhite] = useState(0)
     const styles = useStyles()
     let stylingBlack = styles.player
     let stylingWhite = styles.player
-
+    let increaseCaptureCount
     if (currentPlayer === player.black) {
         stylingBlack += " " + styles.current
+        stylingWhite += " " + styles.inactive
+        increaseCaptureCount = (captures) => setCaptureCountBlack(captureCountBlack + captures)
     } else {
         stylingWhite += " " + styles.current
+        stylingBlack += " " + styles.inactive
+        increaseCaptureCount = (captures) => setCaptureCountWhite(captureCountWhite + captures)
     }
 
 
@@ -48,12 +57,16 @@ export default function Game() {
                 color="primary">PASS</Button>
         <br/>
         Create a new Game in size: <TextField
-        onChange={(event) => newGame(event, setRows, setCurrentPlayer)}>Hello.</TextField>
+        onChange={(event) => newGame(event, setRows, setCurrentPlayer, setCaptureCountBlack, setCaptureCountWhite)}>Hello.</TextField>
         <div className={styles.container}>
-            <div className={stylingBlack}>Black</div>
+            <div className={stylingBlack}>
+                Black ({captureCountBlack})
+            </div>
             <Board rows={rows}
-                   clicked={(id) => clicked(id, rows, setRows, currentPlayer, () => moveMade(currentPlayer, setCurrentPlayer))}/>
-            <div className={stylingWhite}>White</div>
+                   clicked={(id) => clicked(id, rows, setRows, currentPlayer, () => moveMade(currentPlayer, setCurrentPlayer), increaseCaptureCount)}/>
+            <div className={stylingWhite}>
+                White ({captureCountWhite})
+            </div>
         </div>
     </div>)
 }
@@ -65,18 +78,20 @@ function moveMade(currentPlayer, setCurrentPlayer) {
         setCurrentPlayer(player.black)
 }
 
-function newGame(event, setRows, setCurrentPlayer) {
+function newGame(event, setRows, setCurrentPlayer, setCaptureCountBlack, setCaptureCountWhite) {
     if (event.target.value >= 2) {
         setCurrentPlayer(player.black)
         setRows(build_rows(parseInt(event.target.value)))
+        setCaptureCountBlack(0)
+        setCaptureCountWhite(0)
     }
 }
 
-function clicked(id, rows, setRows, currentPlayer, nextPlayer) {
+function clicked(id, rows, setRows, currentPlayer, nextPlayer, increaseCaptureCount) {
     let madeLegitMove = false
     let newRows = replaceIdWithCurrentPlayer(id, rows, currentPlayer, nextPlayer, () => madeLegitMove = true)
     if (madeLegitMove)
-        newRows = capturer(id, newRows)
+        newRows = capturer(id, newRows, (captures) => increaseCaptureCount(captures))
     setRows(newRows)
 }
 

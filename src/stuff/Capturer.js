@@ -1,23 +1,23 @@
 import {owner_type} from "./OwnerType";
 import Owner from "./Owner";
 
-export default function capturer(id, rows) {
-    return removeCapturedStones(id, rows)
+export default function capturer(id, rows, captured) {
+    return removeCapturedStones(id, rows, captured)
 }
 
 
-function removeCapturedStones(id, rows) {
+function removeCapturedStones(id, rows, captured) {
     const toCheck = potentiallyCapturedStones(id, rows)
     const checked = []
 
-    const toRemove = toCheck.map((cell) => check(cell, rows))
+    const toRemove = toCheck.map((cell) => check(cell, rows)).filter(x => x !== undefined)
 
     const result = rows.map(row => row.map(cell => {
         if (toRemove.includes(cell))
             return new Owner(cell.id, cell.cellType, owner_type.empty)
         return cell
     }))
-
+    captured(toRemove.length)
     return result
 }
 
