@@ -1,46 +1,56 @@
-import Owner from "./Owner";
+import {owner_type} from "./OwnerType";
+import capturer from "./Capturer";
 
 export default class GameState {
-    constructor(parent, rows, lastMove) {
-        if (parent)
-            this.ancestor = parent.getAncestor()
-        else
-            this.ancestor = this
+    newGame(rows) {
+        this.ancestor = this
+        this.player = owner_type.black
+        this.capturesBlack = 0
+        this.capturesWhite = 0
+        this.lastMove = "Have fun!"
         this.children = []
-        this.parent = parent
+        this.parent = undefined
         this.rows = [...rows]
-        if (lastMove)
-            this.lastMove = lastMove
-        else
-            this.lastMove = ""
+        return this
     }
 
     getRows() {
         return this.rows
     }
 
-    addMove(a, b, owner) {
-        let childRows
-        let lastMove
-        if (this.passed(a, b)) {
-            childRows = [...this.rows]
-            lastMove = "Passed"
-        }
-        if (this.valid(a, b)) {
-            const prev = this.rows[a][b]
-            childRows = [...this.rows]
-            childRows[a][b] = new Owner(prev.id, prev.cellType, owner)
-            lastMove = a + " " + b
-        }
-        if (childRows) {
-            this.addChildState(childRows, lastMove)
+    addMove(x, y) {
+        if (this.valid(x, y)) {
+            let childRows = this.rows.map(row => row.map(cell => {
+                if (cell.x === x && cell.y === y)
+                    return cell.changeTo(this.player)
+                return cell
+            }))
+            childRows = capturer(x, y, childRows, (captures) => captures)
+            const lastMove = x + " " + y
+            return this.addChildState(childRows, lastMove)
         }
     }
 
+    pass() {
+        return this.addChildState(this.rows.map(row => [...row]), "Passed")
+    }
+
+    createChild(rows, lastMove) {
+        const child = new GameState()
+        child.rows = rows
+        child.ancestor = this.ancestor
+        child.player = this.calcNextPlayer()
+        child.capturesBlack = this.capturesBlack
+        child.capturesWhite = this.capturesWhite
+        child.lastMove = lastMove
+        child.children = []
+        return child
+    }
+
     addChildState(childRows, lastMove) {
-        const newState = new GameState(this, childRows, lastMove)
-        this.children.push(newState)
-        return newState
+        const child = this.createChild(childRows, lastMove)
+        this.children.push(child)
+        return child
     }
 
     passed(a, b) {
@@ -58,4 +68,10 @@ export default class GameState {
     getLastMove() { return this.lastMove }
 
     getAncestor() { return this.ancestor }
+
+    calcNextPlayer() {
+        if (this.player === owner_type.black)
+            return owner_type.white
+        return owner_type.black
+    }
 }

@@ -1,7 +1,4 @@
 import capturer from "./Capturer";
-import build_rows from "./RowFactory";
-import Owner from "./Owner";
-import {owner_type} from "./OwnerType";
 import PlayBuilder from "./PlayBuilder";
 
 test('no stone on first line should change nothing', () => {
@@ -10,28 +7,26 @@ test('no stone on first line should change nothing', () => {
     const rows = smallBoard().black(id).state()
 
     // when + then
-    expect(capturer(id, rows, () => {
+    expect(capturer(0, 0, rows, () => {
     })).toStrictEqual(rows)
 })
 
-test('no stone on last line should change nothing', () => {
+test('stone on last line should change nothing', () => {
     // given
-    const id = 3 * 3 - 1
-    const rows = smallBoard().black(id).state()
+    const rows = smallBoard().black(0, 2).state()
 
     // when + then
-    expect(capturer(id, rows, () => {
+    expect(capturer(0, 2, rows, () => {
     })).toStrictEqual(rows)
 })
 
 test('should be able to capture top left corner', () => {
     // given
-    const id = 3
-    const rows = smallBoard().black(1).white(0).black(id).state()
-    const rowsWithoutWhite = smallBoard().black(1).black(id).state()
+    const rows = smallBoard().black(1, 0).white(0, 0).black(0, 1).state()
+    const rowsWithoutWhite = smallBoard().black(1, 0).black(0, 1).state()
 
     // when
-    const result = capturer(id, rows, () => {
+    const result = capturer(0, 1, rows, () => {
     })
 
     // then
@@ -40,12 +35,11 @@ test('should be able to capture top left corner', () => {
 
 test('should be able to capture top right corner', () => {
     // given
-    const id = 1
-    const rows = smallBoard().black(5).white(2).black(id).state()
-    const rowsWithoutWhite = smallBoard().black(5).black(id).state()
+    const rows = smallBoard().black(2, 1).white(2, 0).black(1, 0).state()
+    const rowsWithoutWhite = smallBoard().black(2, 1).black(1, 0).state()
 
     // when
-    const result = capturer(id, rows, () => {
+    const result = capturer(1, 0, rows, () => {
     })
 
     // then
@@ -54,12 +48,11 @@ test('should be able to capture top right corner', () => {
 
 test('should be able to capture bottom left corner', () => {
     // given
-    const id = 3
-    const rows = smallBoard().black(7).white(6).black(id).state()
-    const rowsWithoutWhite = smallBoard().black(7).black(id).state()
+    const rows = smallBoard().black(1, 2).white(0, 2).black(0, 1).state()
+    const rowsWithoutWhite = smallBoard().black(1, 2).black(0, 1).state()
 
     // when
-    const result = capturer(id, rows, () => {
+    const result = capturer(0, 1, rows, () => {
     })
 
     // then
@@ -68,12 +61,11 @@ test('should be able to capture bottom left corner', () => {
 
 test('should be able to capture bottom right corner', () => {
     // given
-    const id = 7
-    const rows = smallBoard().black(5).white(8).black(id).state()
-    const rowsWithoutWhite = smallBoard().black(5).black(id).state()
+    const rows = smallBoard().black(2, 1).white(2, 2).black(1, 2).state()
+    const rowsWithoutWhite = smallBoard().black(2, 1).black(1, 2).state()
 
     // when
-    const result = capturer(id, rows, () => {
+    const result = capturer(1, 2, rows, () => {
     })
 
     // then
@@ -82,12 +74,11 @@ test('should be able to capture bottom right corner', () => {
 
 test('should be able to capture in the middle', () => {
     // given
-    const id = 5
-    const rows = smallBoard().black(1).black(7).black(3).white(4).black(5).state()
-    const rowsWithoutWhite = smallBoard().black(1).black(7).black(3).black(id).state()
+    const rows = smallBoard().black(1, 0).black(1, 2).black(0, 1).white(1, 1).black(2, 1).state()
+    const rowsWithoutWhite = smallBoard().black(1, 0).black(1, 2).black(0, 1).black(2, 1).state()
 
     // when
-    const result = capturer(id, rows, () => {
+    const result = capturer(2, 1, rows, () => {
     })
 
     // then
@@ -96,11 +87,10 @@ test('should be able to capture in the middle', () => {
 
 test('should not capture if top is empty', () => {
     // given
-    const id = 5
-    const rows = smallBoard().black(7).black(3).white(4).black(id).state()
+    const rows = smallBoard().black(1, 2).black(0, 1).white(1, 1).black(2, 1).state()
 
     // when
-    const result = capturer(id, rows, () => {
+    const result = capturer(2, 1, rows, () => {
     })
 
     // then
@@ -109,14 +99,12 @@ test('should not capture if top is empty', () => {
 
 test('should call capture count function with 0 when captured nothing', () => {
     // given
-    // given
-    const id = 5
-    const rows = smallBoard().black(7).black(3).white(4).black(id).state()
+    const rows = smallBoard().black(1, 2).black(0,1).white(1, 1).black(2, 1).state()
     let captureCount = 0
     let captureCalled = false
 
     // when
-    capturer(id, rows, (captured) => {
+    capturer(2, 1, rows, (captured) => {
         captureCount = captured
         captureCalled = true
     })
@@ -128,13 +116,12 @@ test('should call capture count function with 0 when captured nothing', () => {
 
 test('should call capture count function when captured something', () => {
     // given
-    const id = 3
-    const rows = smallBoard().black(1).white(0).black(id).state()
+    const rows = smallBoard().black(1, 0).white(0, 0).black(0, 1).state()
     let captureCount = 0
     let captureCalled = false
 
     // when
-    capturer(id, rows, (captured) => {
+    capturer(0, 1, rows, (captured) => {
         captureCount = captured
         captureCalled = true
     })
@@ -146,12 +133,11 @@ test('should call capture count function when captured something', () => {
 
 test('should be able to capture two stones in the top left corner', () => {
     // given
-    const id = 4
-    const rows = smallBoard().white(0).white(1).black(2).black(3).black(id).state()
-    const rowsWithoutWhite = smallBoard().black(2).black(3).black(id).state()
+    const rows = smallBoard().white(0, 0).white(1, 0).black(2, 0).black(0, 1).black(1, 1).state()
+    const rowsWithoutWhite = smallBoard().black(2, 0).black(0, 1).black(1, 1).state()
 
     // when
-    const result = capturer(id, rows, () => {})
+    const result = capturer(1, 1, rows, () => {})
 
     // then
     expect(result).toStrictEqual(rowsWithoutWhite)
@@ -159,13 +145,12 @@ test('should be able to capture two stones in the top left corner', () => {
 
 test('should count all the captures', () => {
     // given
-    const id = 4
-    const rows = smallBoard().white(0).white(1).black(2).black(3).black(id).state()
+    const rows = smallBoard().white(0, 0).white(1, 0).black(2, 0).black(0, 1).black(1, 1).state()
     let captureCount = 0
     let captureCalled = false
 
     // when
-    capturer(id, rows, (captured) => {
+    capturer(1, 1, rows, (captured) => {
         captureCount = captured
         captureCalled = true
     })

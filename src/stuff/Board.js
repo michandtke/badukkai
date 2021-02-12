@@ -21,7 +21,7 @@ export default function Board(props) {
                     {row.map((cell) => (
                         <td className={classes.cell} key={cell.id}>
                             <ImageProvider ownerType={cell.owner} cellType={cell.cellType} key={cell.id}
-                                           clicked={() => props.clicked(cell.id)}/>
+                                           clicked={() => props.clicked(cell.x, cell.y)}/>
                         </td>
                     ))}
                 </tr>
