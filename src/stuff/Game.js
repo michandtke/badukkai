@@ -8,6 +8,7 @@ import {owner_type} from "./OwnerType";
 import {makeStyles} from "@material-ui/core/styles";
 import capturer from "./Capturer";
 import GameTree from "./GameTree";
+import GameState from "./GameState";
 
 
 const player = {
@@ -33,9 +34,11 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Game() {
     const [currentPlayer, setCurrentPlayer] = useState(player.black)
-    const [rows, setRows] = useState(build_rows(3))
     const [captureCountBlack, setCaptureCountBlack] = useState(0)
     const [captureCountWhite, setCaptureCountWhite] = useState(0)
+    const s = new GameState(undefined, build_rows(3))
+    const [gameState, setGameState] = useState(s)
+    console.log(gameState)
     const styles = useStyles()
     let stylingBlack = styles.player
     let stylingWhite = styles.player
@@ -58,13 +61,13 @@ export default function Game() {
                 color="primary">PASS</Button>
         <br/>
         Create a new Game in size: <TextField
-        onChange={(event) => newGame(event, setRows, setCurrentPlayer, setCaptureCountBlack, setCaptureCountWhite)}>Hello.</TextField>
+        onChange={(event) => newGame(event, setGameState, setCurrentPlayer, setCaptureCountBlack, setCaptureCountWhite)}>Hello.</TextField>
         <div className={styles.container}>
             <div className={stylingBlack}>
                 Black ({captureCountBlack})
             </div>
-            <Board rows={rows}
-                   clicked={(id) => clicked(id, rows, setRows, currentPlayer, () => moveMade(currentPlayer, setCurrentPlayer), increaseCaptureCount)}/>
+            <Board rows={gameState.getRows()}
+                   clicked={(id) => clicked(id, gameState, setGameState, currentPlayer, () => moveMade(currentPlayer, setCurrentPlayer), increaseCaptureCount)}/>
             <div className={stylingWhite}>
                 White ({captureCountWhite})
             </div>
@@ -80,21 +83,24 @@ function moveMade(currentPlayer, setCurrentPlayer) {
         setCurrentPlayer(player.black)
 }
 
-function newGame(event, setRows, setCurrentPlayer, setCaptureCountBlack, setCaptureCountWhite) {
+function newGame(event, setGameState, setCurrentPlayer, setCaptureCountBlack, setCaptureCountWhite) {
+    console.log("New Game!")
     if (event.target.value >= 2) {
         setCurrentPlayer(player.black)
-        setRows(build_rows(parseInt(event.target.value)))
+        setGameState(new GameState(undefined, build_rows(parseInt(event.target.value))))
         setCaptureCountBlack(0)
         setCaptureCountWhite(0)
     }
 }
 
-function clicked(id, rows, setRows, currentPlayer, nextPlayer, increaseCaptureCount) {
+function clicked(id, gameState, setGameState, currentPlayer, nextPlayer, increaseCaptureCount) {
     let madeLegitMove = false
+    const rows = gameState.getRows()
     let newRows = replaceIdWithCurrentPlayer(id, rows, currentPlayer, nextPlayer, () => madeLegitMove = true)
     if (madeLegitMove)
         newRows = capturer(id, newRows, (captures) => increaseCaptureCount(captures))
-    setRows(newRows)
+    console.log("clicked!")
+    setGameState(gameState.addChildState(newRows))
 }
 
 function replaceIdWithCurrentPlayer(id, rows, currentPlayer, nextPlayer, madeLegitMove) {

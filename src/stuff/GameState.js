@@ -21,9 +21,14 @@ export default class GameState {
             childRows[a][b] = new Owner(prev.id, prev.cellType, owner)
         }
         if (childRows) {
-            const newState = new GameState(this, childRows)
-            this.children.push(newState)
+            this.addChildState(childRows)
         }
+    }
+
+    addChildState(childRows) {
+        const newState = new GameState(this, childRows)
+        this.children.push(newState)
+        return newState
     }
 
     passed(a, b) {
