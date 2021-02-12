@@ -1,10 +1,18 @@
 import Owner from "./Owner";
 
 export default class GameState {
-    constructor(parent, rows) {
+    constructor(parent, rows, lastMove) {
+        if (parent)
+            this.ancestor = parent.getAncestor()
+        else
+            this.ancestor = this
         this.children = []
         this.parent = parent
         this.rows = [...rows]
+        if (lastMove)
+            this.lastMove = lastMove
+        else
+            this.lastMove = ""
     }
 
     getRows() {
@@ -13,20 +21,24 @@ export default class GameState {
 
     addMove(a, b, owner) {
         let childRows
-        if (this.passed(a, b))
+        let lastMove
+        if (this.passed(a, b)) {
             childRows = [...this.rows]
+            lastMove = "Passed"
+        }
         if (this.valid(a, b)) {
             const prev = this.rows[a][b]
             childRows = [...this.rows]
             childRows[a][b] = new Owner(prev.id, prev.cellType, owner)
+            lastMove = a + " " + b
         }
         if (childRows) {
-            this.addChildState(childRows)
+            this.addChildState(childRows, lastMove)
         }
     }
 
-    addChildState(childRows) {
-        const newState = new GameState(this, childRows)
+    addChildState(childRows, lastMove) {
+        const newState = new GameState(this, childRows, lastMove)
         this.children.push(newState)
         return newState
     }
@@ -42,4 +54,8 @@ export default class GameState {
     getChildren() {
         return this.children
     }
+
+    getLastMove() { return this.lastMove }
+
+    getAncestor() { return this.ancestor }
 }

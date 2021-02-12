@@ -36,9 +36,8 @@ export default function Game() {
     const [currentPlayer, setCurrentPlayer] = useState(player.black)
     const [captureCountBlack, setCaptureCountBlack] = useState(0)
     const [captureCountWhite, setCaptureCountWhite] = useState(0)
-    const s = new GameState(undefined, build_rows(3))
-    const [gameState, setGameState] = useState(s)
-    console.log(gameState)
+    const [gameState, setGameState] = useState(new GameState(undefined, build_rows(3)))
+
     const styles = useStyles()
     let stylingBlack = styles.player
     let stylingWhite = styles.player
@@ -71,7 +70,7 @@ export default function Game() {
             <div className={stylingWhite}>
                 White ({captureCountWhite})
             </div>
-            <GameTree />
+            <GameTree gameState={gameState} />
         </div>
     </div>)
 }
@@ -84,7 +83,6 @@ function moveMade(currentPlayer, setCurrentPlayer) {
 }
 
 function newGame(event, setGameState, setCurrentPlayer, setCaptureCountBlack, setCaptureCountWhite) {
-    console.log("New Game!")
     if (event.target.value >= 2) {
         setCurrentPlayer(player.black)
         setGameState(new GameState(undefined, build_rows(parseInt(event.target.value))))
@@ -99,8 +97,7 @@ function clicked(id, gameState, setGameState, currentPlayer, nextPlayer, increas
     let newRows = replaceIdWithCurrentPlayer(id, rows, currentPlayer, nextPlayer, () => madeLegitMove = true)
     if (madeLegitMove)
         newRows = capturer(id, newRows, (captures) => increaseCaptureCount(captures))
-    console.log("clicked!")
-    setGameState(gameState.addChildState(newRows))
+    setGameState(gameState.addChildState(newRows, "id: " + id))
 }
 
 function replaceIdWithCurrentPlayer(id, rows, currentPlayer, nextPlayer, madeLegitMove) {
