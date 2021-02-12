@@ -7,6 +7,7 @@ import Owner from "./Owner";
 import {owner_type} from "./OwnerType";
 import {makeStyles} from "@material-ui/core/styles";
 import capturer from "./Capturer";
+import GameTree from "./GameTree";
 
 
 const player = {
@@ -67,6 +68,7 @@ export default function Game() {
             <div className={stylingWhite}>
                 White ({captureCountWhite})
             </div>
+            <GameTree />
         </div>
     </div>)
 }
