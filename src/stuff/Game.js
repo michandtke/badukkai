@@ -16,6 +16,9 @@ const useStyles = makeStyles((theme) => ({
         padding: "40px",
         border: "solid"
     },
+    spacer: {
+        width: "available"
+    },
     current: {},
     inactive: {
         borderColor: "#282c34"
@@ -51,11 +54,14 @@ export default function Game() {
             <div className={stylingBlack}>
                 Black ({gameState.capturesBlack})
             </div>
-            <Board rows={gameState.getRows()}
-                   clicked={(x, y) => clicked(x, y, gameState, setGameState)}/>
+            <div className={styles.spacer}/>
             <div className={stylingWhite}>
                 White ({gameState.capturesWhite})
             </div>
+        </div>
+        <div className={styles.container}>
+            <Board rows={gameState.getRows()}
+                   clicked={(x, y) => clicked(x, y, gameState, setGameState)}/>
             <GameTree gameState={gameState} setGameState={setGameState}/>
         </div>
     </div>)
