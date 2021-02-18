@@ -52,6 +52,9 @@ export default class GameState {
     }
 
     addChildState(childRows, lastMove) {
+        const known = this.children.find(child => child.lastMove === lastMove)
+        if (known)
+            return known
         const child = this.createChild(childRows, lastMove)
         this.children.push(child)
         return child
