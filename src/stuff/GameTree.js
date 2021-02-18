@@ -1,23 +1,44 @@
 import React from "react";
-import {IconButton} from "@material-ui/core";
+import {Grid, IconButton} from "@material-ui/core";
 import {Adjust} from "@material-ui/icons";
 
 export default function gameTree({gameState, setGameState}) {
-    let layer = 0
     const ancestor = gameState.getAncestor()
-    return (<div>{child_rec(ancestor, layer, setGameState)}</div>)
+    const flattenChildren = flatten_children([ancestor], [])
+    return (<div>{drawRow(flattenChildren, setGameState)}</div>)
 }
 
-function child_rec(ch, layer, setGameState) {
-    layer = layer + 1
+function drawRow(children, setGameState) {
     return (
-        <div key={layer}>
-            <IconButton onClick={() => click(ch, setGameState)}><Adjust /></IconButton>
-            {ch.getChildren().map(child => child_rec(child, layer, setGameState))}
-        </div>
+        <Grid container>
+            {children.map(child => {
+                return drawChildren(child, setGameState)
+            })}
+        </Grid>
+    )
+}
+
+function drawChildren(children, setGameState) {
+    return (
+        <Grid container>
+            {children.map(child => {
+                return (<IconButton onClick={() => click(child, setGameState)}><Adjust /></IconButton>)
+            })}
+        </Grid>
     )
 }
 
 function click(child, setGameState) {
     setGameState(child)
+}
+
+function flatten_children(parents, resultList) {
+    if (parents && parents.length > 0) {
+        console.log(parents)
+        const children = parents.flatMap(parent => parent.getChildren())
+        if (children && children.length > 0)
+            resultList.push(children)
+        return flatten_children(children, resultList)
+    }
+    return resultList
 }
