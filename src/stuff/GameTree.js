@@ -1,6 +1,8 @@
 import React from "react";
-import {Grid, IconButton} from "@material-ui/core";
+import {Grid} from "@material-ui/core";
 import {Adjust} from "@material-ui/icons";
+import Xarrow from "react-xarrows";
+import Button from "@material-ui/core/Button";
 
 export default function gameTree({gameState, setGameState}) {
     const ancestor = gameState.getAncestor()
@@ -22,10 +24,33 @@ function drawChildren(children, setGameState) {
     return (
         <Grid container>
             {children.map(child => {
-                return (<IconButton onClick={() => click(child, setGameState)}><Adjust /></IconButton>)
+                return (<div>
+                        <Button id={child.id} onClick={() => click(child, setGameState)}><Adjust/></Button>
+                        {line(child)}
+                    </div>
+                )
             })}
         </Grid>
     )
+}
+
+function line(child) {
+    return (<Xarrow start={child.parentId} end={child.id} path="straight" headSize={0} color="white"
+                    startAnchor={
+                        {
+                            position: "middle",
+                            offset: {
+                                bottomness: 12
+                            }
+                        }
+                    }
+                    endAnchor={{
+                        position: "middle",
+                        offset: {
+                            bottomness: -12
+                        }
+                    }}
+    />)
 }
 
 function click(child, setGameState) {

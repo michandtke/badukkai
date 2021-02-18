@@ -1,8 +1,10 @@
 import {owner_type} from "./OwnerType";
 import capturer from "./Capturer";
+import * as uuid from "uuid";
 
 export default class GameState {
     newGame(rows) {
+        this.id = uuid.v4()
         this.ancestor = this
         this.player = owner_type.black
         this.capturesBlack = 0
@@ -37,8 +39,10 @@ export default class GameState {
 
     createChild(rows, lastMove) {
         const child = new GameState()
+        child.id = uuid.v4()
         child.rows = rows
         child.ancestor = this.ancestor
+        child.parentId = this.id
         child.player = this.calcNextPlayer()
         child.capturesBlack = this.capturesBlack
         child.capturesWhite = this.capturesWhite
