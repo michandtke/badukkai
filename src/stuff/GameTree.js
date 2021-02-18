@@ -11,26 +11,31 @@ const useStyles = makeStyles((theme) => ({
 export default function GameTree({gameState, setGameState}) {
     const styles = useStyles()
     const ancestor = gameState.getAncestor()
+    const current = gameState.id
     const flattenChildren = flatten_children([ancestor], [])
-    return (<div>{drawRow(flattenChildren, setGameState, styles)}</div>)
+    return (<div>{drawRow(flattenChildren, current, setGameState, styles)}</div>)
 }
 
-function drawRow(children, setGameState, styles) {
+function drawRow(children, current, setGameState, styles) {
     return (
         <div>
             {children.map(child => {
-                return drawChildren(child, setGameState, styles)
+                return drawChildren(child, current, setGameState, styles)
             })}
         </div>
     )
 }
 
-function drawChildren(children, setGameState, styles) {
+function drawChildren(children, current, setGameState, styles) {
     return (
         <div className={styles.container}>
             {children.map(child => {
+                let color
+                if (child.id === current)
+                    color = "secondary"
                 return (<div>
-                        <Button id={child.id} onClick={() => click(child, setGameState)}><Adjust/></Button>
+                        <Button id={child.id} color={color}
+                                onClick={() => click(child, setGameState)}><Adjust/></Button>
                         {line(child)}
                     </div>
                 )

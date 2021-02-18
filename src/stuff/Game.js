@@ -19,6 +19,9 @@ const useStyles = makeStyles((theme) => ({
     spacer: {
         width: "available"
     },
+    newGamer: {
+        margin: "0px 12px"
+    },
     current: {},
     inactive: {
         borderColor: "#282c34"
@@ -48,8 +51,13 @@ export default function Game() {
         <Button onClick={() => setGameState(gameState.pass())} variant="contained"
                 color="primary">PASS</Button>
         <br/>
-        Create a new Game in size:
-        <TextField onChange={(event) => newGame(event, setGameState)}/>
+        Create a new Game:
+        <Button className={styles.newGamer} variant="contained" color="primary"
+                onClick={() => newGame(9, setGameState)}>9x9</Button>
+        <Button className={styles.newGamer} variant="contained" color="primary"
+                onClick={() => newGame(13, setGameState)}>13x13</Button>
+        <Button className={styles.newGamer} variant="contained" color="primary"
+                onClick={() => newGame(19, setGameState)}>19x19</Button>
         <div className={styles.container}>
             <div className={stylingBlack}>
                 Black ({gameState.capturesBlack})
@@ -67,10 +75,8 @@ export default function Game() {
     </div>)
 }
 
-function newGame(event, setGameState) {
-    if (event.target.value >= 2) {
-        setGameState(new GameState().newGame(build_rows(parseInt(event.target.value))))
-    }
+function newGame(size, setGameState) {
+    setGameState(new GameState().newGame(build_rows(size)))
 }
 
 function clicked(x, y, gameState, setGameState) {
