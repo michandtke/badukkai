@@ -25,6 +25,16 @@ const useStyles = makeStyles((theme) => ({
     current: {},
     inactive: {
         borderColor: "#282c34"
+    },
+    board: {
+        maxWidth: "80%",
+    },
+    header: {
+        height: "28vh",
+        marginTop: "2vh"
+    },
+    body: {
+        height: "70vh"
     }
 
 }));
@@ -46,31 +56,37 @@ export default function Game() {
 
 
     return (<div>
-        Hello, my friend. Have a great game. And please, have fun playing it.
-        <br/>
-        <Button onClick={() => setGameState(gameState.pass())} variant="contained"
-                color="primary">PASS</Button>
-        <br/>
-        Create a new Game:
-        <Button className={styles.newGamer} variant="contained" color="primary"
-                onClick={() => newGame(9, setGameState)}>9x9</Button>
-        <Button className={styles.newGamer} variant="contained" color="primary"
-                onClick={() => newGame(13, setGameState)}>13x13</Button>
-        <Button className={styles.newGamer} variant="contained" color="primary"
-                onClick={() => newGame(19, setGameState)}>19x19</Button>
-        <div className={styles.container}>
-            <div className={stylingBlack}>
-                Black ({gameState.capturesBlack})
-            </div>
-            <div className={styles.spacer}/>
-            <div className={stylingWhite}>
-                White ({gameState.capturesWhite})
+        <div className={styles.header}>
+            Hello, my friend. Have a great game. And please, have fun playing it.
+            <br/>
+            <Button onClick={() => setGameState(gameState.pass())} variant="contained"
+                    color="primary">PASS</Button>
+            <br/>
+            Create a new Game:
+            <Button className={styles.newGamer} variant="contained" color="primary"
+                    onClick={() => newGame(9, setGameState)}>9x9</Button>
+            <Button className={styles.newGamer} variant="contained" color="primary"
+                    onClick={() => newGame(13, setGameState)}>13x13</Button>
+            <Button className={styles.newGamer} variant="contained" color="primary"
+                    onClick={() => newGame(19, setGameState)}>19x19</Button>
+            <div className={styles.container}>
+                <div className={stylingBlack}>
+                    Black ({gameState.capturesBlack})
+                </div>
+                <div className={styles.spacer}/>
+                <div className={stylingWhite}>
+                    White ({gameState.capturesWhite})
+                </div>
             </div>
         </div>
-        <div className={styles.container}>
-            <Board rows={gameState.getRows()}
-                   clicked={(x, y) => clicked(x, y, gameState, setGameState)}/>
-            <GameTree gameState={gameState} setGameState={setGameState}/>
+        <div className={styles.body}>
+            <div className={styles.container}>
+                <div className={styles.board}>
+                    <Board rows={gameState.getRows()}
+                           clicked={(x, y) => clicked(x, y, gameState, setGameState)}/>
+                </div>
+                <GameTree gameState={gameState} setGameState={setGameState}/>
+            </div>
         </div>
     </div>)
 }

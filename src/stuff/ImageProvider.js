@@ -31,14 +31,32 @@ import {owner_type} from "./OwnerType";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
-    inlineImage: {
-        display: "block"
+    smallImage: {
+        display: "block",
+        height: "3vh"
+    },
+    mediumImage: {
+        display: "block",
+        height: "5vh"
+    },
+    bigImage: {
+        display: "block",
+        height: "7vh"
     }
 }));
 
 export default function ImageProvider(props) {
     const classes = useStyles();
-    return (<img src={image(props.ownerType, props.cellType)} className={classes.inlineImage} onClick={props.clicked} alt={"Hello"}/>)
+    const imageClass = calcImageClass(classes, props.size)
+    return (<img src={image(props.ownerType, props.cellType)} className={imageClass} onClick={props.clicked} alt={"Hello"}/>)
+}
+
+function calcImageClass(classes, size) {
+    if (!size || size > 18)
+        return classes.smallImage
+    if (size > 12)
+        return classes.mediumImage
+    return classes.bigImage
 }
 
 function image(ownerType, cellType) {

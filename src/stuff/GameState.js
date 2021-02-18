@@ -22,22 +22,24 @@ export default class GameState {
 
     addMove(x, y) {
         if (this.valid(x, y)) {
-            let childRows = this.rows.map(row => row.map(cell => {
+            let childRows, captures
+            const rowsBeforeCapture = this.rows.map(row => row.map(cell => {
                 if (cell.x === x && cell.y === y)
                     return cell.changeTo(this.player)
                 return cell
-            }))
-            childRows = capturer(x, y, childRows, (captures) => captures)
+            }));
+
+            [childRows, captures] = capturer(x, y, rowsBeforeCapture)
             const lastMove = x + " " + y
-            return this.addChildState(childRows, lastMove)
+            return this.addChildState(childRows, lastMove, captures)
         }
     }
 
     pass() {
-        return this.addChildState(this.rows.map(row => [...row]), "Passed")
+        return this.addChildState(this.rows.map(row => [...row]), "Passed", 0)
     }
 
-    createChild(rows, lastMove) {
+    createChild(rows, lastMove, captures) {
         const child = new GameState()
         child.id = uuid.v4()
         child.rows = rows
@@ -48,14 +50,18 @@ export default class GameState {
         child.capturesWhite = this.capturesWhite
         child.lastMove = lastMove
         child.children = []
+        if (this.player === owner_type.black)
+            child.capturesBlack += captures
+        else
+            child.capturesWhite += captures
         return child
     }
 
-    addChildState(childRows, lastMove) {
+    addChildState(childRows, lastMove, captures) {
         const known = this.children.find(child => child.lastMove === lastMove)
         if (known)
             return known
-        const child = this.createChild(childRows, lastMove)
+        const child = this.createChild(childRows, lastMove, captures)
         this.children.push(child)
         return child
     }

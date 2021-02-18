@@ -5,7 +5,8 @@ import Button from "@material-ui/core/Button";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
-    container: {display: "flex"}
+    container: {display: "flex"},
+    // tree: {height: "60vh", overflow: "scroll"}
 }));
 
 export default function GameTree({gameState, setGameState}) {
@@ -13,7 +14,7 @@ export default function GameTree({gameState, setGameState}) {
     const ancestor = gameState.getAncestor()
     const current = gameState.id
     const flattenChildren = flatten_children([ancestor], [])
-    return (<div>{drawRow(flattenChildren, current, setGameState, styles)}</div>)
+    return (<div className={styles.tree}>{drawRow(flattenChildren, current, setGameState, styles)}</div>)
 }
 
 function drawRow(children, current, setGameState, styles) {

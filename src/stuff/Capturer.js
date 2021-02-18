@@ -1,6 +1,6 @@
 import {owner_type} from "./OwnerType";
 
-export default function capturer(x, y, rows, captured) {
+export default function capturer(x, y, rows) {
     const toCheck = potentiallyCapturedStones(x, y, rows)
 
     const toRemove = [...new Set(toCheck.flatMap((cell) => check(cell, rows))
@@ -12,8 +12,7 @@ export default function capturer(x, y, rows, captured) {
             return cell.changeTo(owner_type.empty)
         return cell
     }))
-    captured(toRemove.length)
-    return result
+    return [result, toRemove.length]
 }
 
 function id(cell) {
