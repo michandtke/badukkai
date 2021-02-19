@@ -20,7 +20,8 @@ function id(cell) {
 }
 
 function potentiallyCapturedStones(x, y, rows) {
-    const owner = cellAt(x, y, rows).owner
+    const cell = cellAt(x, y, rows)
+    const owner = cell.owner
     const canCapture = owner === owner_type.white ? owner_type.black : owner_type.white
     const left = differentOwner(leftNeighbour(x, y, rows), canCapture)
     const right = differentOwner(rightNeighbour(x, y, rows), canCapture)

@@ -1,12 +1,13 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Board from "./Board";
 import {Button} from "@material-ui/core";
-import TextField from "@material-ui/core/TextField";
 import build_rows from "./RowFactory";
 import {owner_type} from "./OwnerType";
 import {makeStyles} from "@material-ui/core/styles";
 import GameTree from "./GameTree";
 import GameState from "./GameState";
+import SGFParser from "../parser/SGFParser";
+import Input from "@material-ui/core/Input";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -41,6 +42,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Game() {
     const [gameState, setGameState] = useState(new GameState().newGame(build_rows(3)))
+    const downPress = useKeyPress("ArrowDown");
+
+    useEffect(() => {
+        if (downPress && gameState.getChildren() && gameState.getChildren()[0]) {
+            setGameState(gameState.getChildren()[0])
+        }
+    }, [downPress]);
 
     const styles = useStyles()
     let stylingBlack = styles.player
@@ -69,6 +77,8 @@ export default function Game() {
                     onClick={() => newGame(13, setGameState)}>13x13</Button>
             <Button className={styles.newGamer} variant="contained" color="primary"
                     onClick={() => newGame(19, setGameState)}>19x19</Button>
+            <Input type="file" name="file" color="secondary"
+                   onChange={(event) => newGameByFileUploadHandler(event, setGameState)}/>
             <div className={styles.container}>
                 <div className={stylingBlack}>
                     Black ({gameState.capturesBlack})
@@ -98,3 +108,47 @@ function newGame(size, setGameState) {
 function clicked(x, y, gameState, setGameState) {
     setGameState(gameState.addMove(x, y))
 }
+
+function newGameByFileUploadHandler(event, setGameState) {
+    event.preventDefault()
+    const reader = new FileReader()
+    const file = event.target.files[0]
+    if (file) {
+
+        reader.onload = async (e) => {
+            const text = (e.target.result)
+            const game = new SGFParser().parse(text)
+            setGameState(game)
+        };
+
+        reader.readAsText(event.target.files[0])
+    }
+}
+
+const useKeyPress = function(targetKey) {
+    const [keyPressed, setKeyPressed] = useState(false);
+
+    function downHandler({ key }) {
+        if (key === targetKey) {
+            setKeyPressed(true);
+        }
+    }
+
+    const upHandler = ({ key }) => {
+        if (key === targetKey) {
+            setKeyPressed(false);
+        }
+    };
+
+    React.useEffect(() => {
+        window.addEventListener("keydown", downHandler);
+        window.addEventListener("keyup", upHandler);
+
+        return () => {
+            window.removeEventListener("keydown", downHandler);
+            window.removeEventListener("keyup", upHandler);
+        };
+    });
+
+    return keyPressed;
+};

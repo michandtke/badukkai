@@ -87,7 +87,7 @@ test("should parse komi", () => {
 test("should parse first move", () => {
     // given
     const parent = new PlayBuilder(19).rows
-    const afterFirstMove = new PlayBuilder(19).black(17, 4).rows
+    const afterFirstMove = new PlayBuilder(19).black(16, 3).rows
     const parser = new SGFParser()
     const sgf = "(;FF[4]GM[1]SZ[19];B[qd])"
 
@@ -112,15 +112,15 @@ test("should parse first four moves", () => {
     const oldest = parsed.ancestor
     expect(player.rows).toStrictEqual(oldest.rows)
     const firstBorn = oldest.getChildren()[0]
-    const expectedFirstBorn = player.black(17, 4)
+    const expectedFirstBorn = player.black(16, 3)
     expect(firstBorn.rows).toStrictEqual(expectedFirstBorn.rows)
     const secondBorn = firstBorn.getChildren()[0]
-    const expectedSecondBorn = expectedFirstBorn.white(16, 16)
+    const expectedSecondBorn = expectedFirstBorn.white(15, 15)
     expect(secondBorn.rows).toStrictEqual(expectedSecondBorn.rows)
     const thirdBorn = secondBorn.getChildren()[0]
-    const expectedThirdBorn = expectedSecondBorn.black(3, 4)
+    const expectedThirdBorn = expectedSecondBorn.black(2, 3)
     expect(thirdBorn.rows).toStrictEqual(expectedThirdBorn.rows)
     const fourthBorn = thirdBorn.getChildren()[0]
-    const expectedFourthBorn = expectedThirdBorn.white(3, 16)
+    const expectedFourthBorn = expectedThirdBorn.white(2, 15)
     expect(fourthBorn.rows).toStrictEqual(expectedFourthBorn.rows)
 })

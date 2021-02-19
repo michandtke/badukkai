@@ -57,6 +57,6 @@ export default class SGFParser {
     }
 
     alphaVal(s) {
-        return s.toLowerCase().charCodeAt(0) - 97 + 1
+        return s.toLowerCase().charCodeAt(0) - 97
     }
 }
