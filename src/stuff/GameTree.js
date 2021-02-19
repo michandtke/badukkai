@@ -5,8 +5,7 @@ import Button from "@material-ui/core/Button";
 import makeStyles from "@material-ui/core/styles/makeStyles";
 
 const useStyles = makeStyles((theme) => ({
-    container: {display: "flex"},
-    // tree: {height: "60vh", overflow: "scroll"}
+    tree: {display: "flex", flexWrap: "wrap"}
 }));
 
 export default function GameTree({gameState, setGameState}) {
@@ -14,22 +13,22 @@ export default function GameTree({gameState, setGameState}) {
     const ancestor = gameState.getAncestor()
     const current = gameState.id
     const flattenChildren = flatten_children([ancestor], [])
-    return (<div className={styles.tree}>{drawRow(flattenChildren, current, setGameState, styles)}</div>)
+    return drawRow(flattenChildren, current, setGameState, styles)
 }
 
 function drawRow(children, current, setGameState, styles) {
     return (
-        <div>
+        <div className={styles.tree}>
             {children.map(child => {
-                return drawChildren(child, current, setGameState, styles)
+                return drawChildren(child, current, setGameState)
             })}
         </div>
     )
 }
 
-function drawChildren(children, current, setGameState, styles) {
+function drawChildren(children, current, setGameState) {
     return (
-        <div className={styles.container}>
+        <div>
             {children.map(child => {
                 let color
                 if (child.id === current)
@@ -37,7 +36,7 @@ function drawChildren(children, current, setGameState, styles) {
                 return (<div>
                         <Button id={child.id} color={color}
                                 onClick={() => click(child, setGameState)}><Adjust/></Button>
-                        {line(child)}
+                        {lineRight(child)}
                     </div>
                 )
             })}
@@ -45,7 +44,7 @@ function drawChildren(children, current, setGameState, styles) {
     )
 }
 
-function line(child) {
+function lineBottom(child) {
     return (
         <Xarrow start={child.parentId} end={child.id} path="straight" headSize={0} color="white"
                 startAnchor={
@@ -60,6 +59,27 @@ function line(child) {
                     position: "middle",
                     offset: {
                         bottomness: -12
+                    }
+                }}
+        />
+    )
+}
+
+function lineRight(child) {
+    return (
+        <Xarrow start={child.parentId} end={child.id} path="straight" headSize={0} color="white"
+                startAnchor={
+                    {
+                        position: "middle",
+                        offset: {
+                            rightness: 12
+                        }
+                    }
+                }
+                endAnchor={{
+                    position: "middle",
+                    offset: {
+                        rightness: -12
                     }
                 }}
         />

@@ -55,6 +55,7 @@ export default class GameState {
         child.capturesWhite = this.capturesWhite
         child.lastMove = lastMove
         child.children = []
+        child.parent = this
         child.black = this.black
         child.white = this.white
         child.komi = this.komi

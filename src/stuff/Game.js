@@ -43,12 +43,18 @@ const useStyles = makeStyles((theme) => ({
 export default function Game() {
     const [gameState, setGameState] = useState(new GameState().newGame(build_rows(3)))
     const downPress = useKeyPress("ArrowDown");
+    const rightPress = useKeyPress("ArrowRight");
+    const leftPress = useKeyPress("ArrowLeft");
+    const upPress = useKeyPress("ArrowUp");
 
     useEffect(() => {
-        if (downPress && gameState.getChildren() && gameState.getChildren()[0]) {
+        if ((downPress || rightPress) && gameState.getChildren() && gameState.getChildren()[0]) {
             setGameState(gameState.getChildren()[0])
         }
-    }, [downPress]);
+        if ((leftPress || upPress) && gameState.parent) {
+            setGameState(gameState.parent)
+        }
+    }, [downPress, leftPress, rightPress, upPress]);
 
     const styles = useStyles()
     let stylingBlack = styles.player
