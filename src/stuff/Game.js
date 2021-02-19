@@ -14,6 +14,7 @@ const useStyles = makeStyles((theme) => ({
         display: "flex"
     },
     player: {
+        width: "30vw",
         padding: "40px",
         border: "solid"
     },
@@ -87,11 +88,13 @@ export default function Game() {
                    onChange={(event) => newGameByFileUploadHandler(event, setGameState)}/>
             <div className={styles.container}>
                 <div className={stylingBlack}>
-                    Black ({gameState.capturesBlack})
+                    {gameState.black.name} ({gameState.black.rank})
+                    <br/>({gameState.capturesBlack})
                 </div>
                 <div className={styles.spacer}/>
                 <div className={stylingWhite}>
-                    White ({gameState.capturesWhite})
+                    {gameState.white.name} ({gameState.white.rank})
+                    <br/>({gameState.capturesWhite})
                 </div>
             </div>
         </div>
