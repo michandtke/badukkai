@@ -1,14 +1,19 @@
 import {owner_type} from "./OwnerType";
 import capturer from "./Capturer";
 import * as uuid from "uuid";
+import Player from "./Player";
+
 
 export default class GameState {
-    newGame(rows) {
+    newGame(rows, komi = "0", black = new Player("Black"), white = new Player("White")) {
         this.id = uuid.v4()
         this.ancestor = this
         this.player = owner_type.black
         this.capturesBlack = 0
         this.capturesWhite = 0
+        this.komi = komi
+        this.black = black
+        this.white = white
         this.lastMove = "Have fun!"
         this.children = []
         this.parent = undefined
@@ -50,6 +55,9 @@ export default class GameState {
         child.capturesWhite = this.capturesWhite
         child.lastMove = lastMove
         child.children = []
+        child.black = this.black
+        child.white = this.white
+        child.komi = this.komi
         if (this.player === owner_type.black)
             child.capturesBlack += captures
         else
