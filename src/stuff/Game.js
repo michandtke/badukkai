@@ -8,6 +8,7 @@ import GameTree from "./GameTree";
 import GameState from "./GameState";
 import SGFParser from "../parser/SGFParser";
 import Input from "@material-ui/core/Input";
+import LoadKifu from "./LoadKifu";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -43,10 +44,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function Game() {
     const [gameState, setGameState] = useState(new GameState().newGame(build_rows(3)))
+    const [showKifus, setShowKifus] = useState(false)
     const downPress = useKeyPress("ArrowDown");
     const rightPress = useKeyPress("ArrowRight");
     const leftPress = useKeyPress("ArrowLeft");
     const upPress = useKeyPress("ArrowUp");
+
+    console.log(showKifus)
 
     useEffect(() => {
         if ((downPress || rightPress) && gameState.getChildren() && gameState.getChildren()[0]) {
@@ -58,6 +62,15 @@ export default function Game() {
     }, [downPress, leftPress, rightPress, upPress]);
 
     const styles = useStyles()
+
+
+    return (<div>
+        {(showKifus) ? <LoadKifu setShowKifus={setShowKifus}/> : undefined}
+        {(!showKifus) ? playStuff(styles, setGameState, gameState, setShowKifus) : undefined}
+    </div>)
+}
+
+function playStuff(styles, setGameState, gameState, setShowKifus) {
     let stylingBlack = styles.player
     let stylingWhite = styles.player
 
@@ -68,8 +81,6 @@ export default function Game() {
         stylingWhite += " " + styles.current
         stylingBlack += " " + styles.inactive
     }
-
-
     return (<div>
         <div className={styles.header}>
             Hello, my friend. Have a great game. And please, have fun playing it.
@@ -86,6 +97,7 @@ export default function Game() {
                     onClick={() => newGame(19, setGameState)}>19x19</Button>
             <Input type="file" name="file" color="secondary"
                    onChange={(event) => newGameByFileUploadHandler(event, setGameState)}/>
+            <Button variant="contained" color="primary" onClick={() => setShowKifus(true)}>Load Kifu</Button>
             <div className={styles.container}>
                 <div className={stylingBlack}>
                     {gameState.black.name} ({gameState.black.rank})
@@ -134,16 +146,16 @@ function newGameByFileUploadHandler(event, setGameState) {
     }
 }
 
-const useKeyPress = function(targetKey) {
+const useKeyPress = function (targetKey) {
     const [keyPressed, setKeyPressed] = useState(false);
 
-    function downHandler({ key }) {
+    function downHandler({key}) {
         if (key === targetKey) {
             setKeyPressed(true);
         }
     }
 
-    const upHandler = ({ key }) => {
+    const upHandler = ({key}) => {
         if (key === targetKey) {
             setKeyPressed(false);
         }
