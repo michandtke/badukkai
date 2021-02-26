@@ -14,7 +14,7 @@ export default class GameState {
         this.komi = komi
         this.black = black
         this.white = white
-        this.lastMove = "Have fun!"
+        this.lastMove = {x: -1, y: -1}
         this.children = []
         this.parent = undefined
         this.rows = [...rows]
@@ -35,13 +35,13 @@ export default class GameState {
             }));
 
             [childRows, captures] = capturer(x, y, rowsBeforeCapture)
-            const lastMove = x + " " + y
+            const lastMove = {x: x, y: y}
             return this.addChildState(childRows, lastMove, captures)
         }
     }
 
     pass() {
-        return this.addChildState(this.rows.map(row => [...row]), "Passed", 0)
+        return this.addChildState(this.rows.map(row => [...row]), {}, 0)
     }
 
     createChild(rows, lastMove, captures) {
@@ -67,7 +67,7 @@ export default class GameState {
     }
 
     addChildState(childRows, lastMove, captures) {
-        const known = this.children.find(child => child.lastMove === lastMove)
+        const known = this.children.find(child => child.lastMove.x === lastMove.x && child.lastMove.y === lastMove.y)
         if (known)
             return known
         const child = this.createChild(childRows, lastMove, captures)
@@ -87,9 +87,9 @@ export default class GameState {
         return this.children
     }
 
-    getLastMove() { return this.lastMove }
-
-    getAncestor() { return this.ancestor }
+    getAncestor() {
+        return this.ancestor
+    }
 
     calcNextPlayer() {
         if (this.player === owner_type.black)

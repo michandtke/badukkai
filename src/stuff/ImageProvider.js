@@ -2,30 +2,48 @@ import middle_point from '../resources/middle_point.png'
 import middle_image from '../resources/middle_image.png'
 import middle_image_black from '../resources/middle_image_black.png'
 import middle_image_white from '../resources/middle_image_white.png'
+import middle_white_last from '../resources/middle_white_last.png'
+import middle_black_last from '../resources/middle_black_last.png'
 import top_border from '../resources/top_border.png'
 import top_border_black from '../resources/top_border_black.png'
 import top_border_white from '../resources/top_border_white.png'
+import top_border_black_last from '../resources/top_border_black_last.png'
+import top_border_white_last from '../resources/top_border_white_last.png'
 import bottom_border from '../resources/bottom_border.png'
 import bottom_border_black from '../resources/bottom_border_black.png'
 import bottom_border_white from '../resources/bottom_border_white.png'
+import bottom_border_white_last from '../resources/bottom_border_white_last.png'
+import bottom_border_black_last from '../resources/bottom_border_black_last.png'
 import left_border from '../resources/left_border.png'
 import left_border_black from '../resources/left_border_black.png'
 import left_border_white from '../resources/left_border_white.png'
+import left_border_white_last from '../resources/left_border_white_last.png'
+import left_border_black_last from '../resources/left_border_black_last.png'
 import right_border from '../resources/right_border.png'
 import right_border_black from '../resources/right_border_black.png'
 import right_border_white from '../resources/right_border_white.png'
+import right_border_black_last from '../resources/right_border_black_last.png'
+import right_border_white_last from '../resources/right_border_white_last.png'
 import lower_left_corner from '../resources/lower_left_corner.png'
 import lower_left_corner_black from '../resources/lower_left_corner_black.png'
 import lower_left_corner_white from '../resources/lower_left_corner_white.png'
+import lower_left_corner_black_last from '../resources/lower_left_corner_black_last.png'
+import lower_left_corner_white_last from '../resources/lower_left_corner_white_last.png'
 import upper_right_corner from '../resources/upper_right_corner.png'
 import upper_right_corner_black from '../resources/upper_right_corner_black.png'
 import upper_right_corner_white from '../resources/upper_right_corner_white.png'
+import upper_right_corner_black_last from '../resources/upper_right_corner_black_last.png'
+import upper_right_corner_white_last from '../resources/upper_right_corner_white_last.png'
 import lower_right_corner from '../resources/lower_right_corner.png'
 import lower_right_corner_black from '../resources/lower_right_corner_black.png'
 import lower_right_corner_white from '../resources/lower_right_corner_white.png'
+import lower_right_corner_black_last from '../resources/lower_right_corner_black_last.png'
+import lower_right_corner_white_last from '../resources/lower_right_corner_white_last.png'
 import upper_left_corner from '../resources/upper_left_corner.png'
 import upper_left_corner_black from '../resources/upper_left_corner_black.png'
 import upper_left_corner_white from '../resources/upper_left_corner_white.png'
+import upper_left_corner_black_last from '../resources/upper_left_corner_black_last.png'
+import upper_left_corner_white_last from '../resources/upper_left_corner_white_last.png'
 import {makeStyles} from "@material-ui/core/styles";
 import {cell_type} from "./CellType";
 import {owner_type} from "./OwnerType";
@@ -46,10 +64,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function ImageProvider({size, ownerType, cellType, clicked}) {
+export default function ImageProvider({size, ownerType, cellType, clicked, wasLastMove}) {
     const classes = useStyles();
     const imageClass = calcImageClass(classes, size)
-    return (<img src={image(ownerType, cellType)} className={imageClass} onClick={clicked} alt={"Hello"}/>)
+    return (<img src={image(ownerType, cellType, wasLastMove)} className={imageClass} onClick={clicked} alt={"Hello"}/>)
 }
 
 function calcImageClass(classes, size) {
@@ -60,130 +78,122 @@ function calcImageClass(classes, size) {
     return classes.bigImage
 }
 
-function image(ownerType, cellType) {
+function image(ownerType, cellType, wasLastMove) {
     switch (cellType) {
         case cell_type.upper_left_corner:
-            return upperLeftCorner(ownerType)
+            return choose(ownerType, wasLastMove, upperLeftCorner)
         case cell_type.lower_left_corner:
-            return lowerLeftCorner(ownerType)
+            return choose(ownerType, wasLastMove, lowerLeftCorner)
         case cell_type.upper_right_corner:
-            return upperRightCorner(ownerType)
+            return choose(ownerType, wasLastMove, upperRightCorner)
         case cell_type.lower_right_corner:
-            return lowerRightCorner(ownerType)
+            return choose(ownerType, wasLastMove, lowerRightCorner)
         case cell_type.upper_border:
-            return upperBorder(ownerType)
+            return choose(ownerType, wasLastMove, topBorder)
         case cell_type.lower_border:
-            return lowerBorder(ownerType)
+            return choose(ownerType, wasLastMove, bottomBorder)
         case cell_type.left_border:
-            return leftBorder(ownerType)
+            return choose(ownerType, wasLastMove, leftBorder)
         case cell_type.right_border:
-            return rightBorder(ownerType)
-        case cell_type.middle:
+            return choose(ownerType, wasLastMove, rightBorder)
         case cell_type.middlePoint:
+            return choose(ownerType, wasLastMove, middleMarker)
+        case cell_type.middle:
+            return choose(ownerType, wasLastMove, middleNormal)
         default:
-            return middle(ownerType, cellType)
+            return "Hi."
     }
 }
 
-function upperLeftCorner(ownerType) {
+function choose(ownerType, wasLastMove, definition) {
     switch (ownerType) {
         case owner_type.black:
-            return upper_left_corner_black
+            return (wasLastMove) ? definition.blackLast : definition.black
         case owner_type.white:
-            return upper_left_corner_white
+            return (wasLastMove) ? definition.whiteLast : definition.white
         default:
-            return upper_left_corner
+            return definition.empty
     }
 }
 
-function lowerLeftCorner(ownerType) {
-    switch (ownerType) {
-        case owner_type.black:
-            return lower_left_corner_black
-        case owner_type.white:
-            return lower_left_corner_white
-        default:
-            return lower_left_corner
-    }
+const upperLeftCorner = {
+    black: upper_left_corner_black,
+    blackLast: upper_left_corner_black_last,
+    white: upper_left_corner_white,
+    whiteLast: upper_left_corner_white_last,
+    empty: upper_left_corner
 }
 
-function upperRightCorner(ownerType) {
-    switch (ownerType) {
-        case owner_type.black:
-            return upper_right_corner_black
-        case owner_type.white:
-            return upper_right_corner_white
-        default:
-            return upper_right_corner
-    }
+
+const lowerLeftCorner = {
+    black: lower_left_corner_black,
+    blackLast: lower_left_corner_black_last,
+    white: lower_left_corner_white,
+    whiteLast: lower_left_corner_white_last,
+    empty: lower_left_corner
 }
 
-function lowerRightCorner(ownerType) {
-    switch (ownerType) {
-        case owner_type.black:
-            return lower_right_corner_black
-        case owner_type.white:
-            return lower_right_corner_white
-        default:
-            return lower_right_corner
-    }
+const upperRightCorner = {
+    black: upper_right_corner_black,
+    blackLast: upper_right_corner_black_last,
+    white: upper_right_corner_white,
+    whiteLast: upper_right_corner_white_last,
+    empty: upper_right_corner
 }
 
-function upperBorder(ownerType) {
-    switch (ownerType) {
-        case owner_type.black:
-            return top_border_black
-        case owner_type.white:
-            return top_border_white
-        default:
-            return top_border
-    }
+const lowerRightCorner = {
+    black: lower_right_corner_black,
+    blackLast: lower_right_corner_black_last,
+    white: lower_right_corner_white,
+    whiteLast: lower_right_corner_white_last,
+    empty: lower_right_corner
 }
 
-function lowerBorder(ownerType) {
-    switch (ownerType) {
-        case owner_type.black:
-            return bottom_border_black
-        case owner_type.white:
-            return bottom_border_white
-        default:
-            return bottom_border
-    }
+const topBorder = {
+    black: top_border_black,
+    blackLast: top_border_black_last,
+    white: top_border_white,
+    whiteLast: top_border_white_last,
+    empty: top_border
 }
 
-function leftBorder(ownerType) {
-    switch (ownerType) {
-        case owner_type.black:
-            return left_border_black
-        case owner_type.white:
-            return left_border_white
-        default:
-            return left_border
-    }
+const bottomBorder = {
+    black: bottom_border_black,
+    blackLast: bottom_border_black_last,
+    white: bottom_border_white,
+    whiteLast: bottom_border_white_last,
+    empty: bottom_border
 }
 
-function rightBorder(ownerType) {
-    switch (ownerType) {
-        case owner_type.black:
-            return right_border_black
-        case owner_type.white:
-            return right_border_white
-        default:
-            return right_border
-    }
+const leftBorder = {
+    black: left_border_black,
+    blackLast: left_border_black_last,
+    white: left_border_white,
+    whiteLast: left_border_white_last,
+    empty: left_border
 }
 
-function middle(ownerType, cellType) {
-    console.log(cellType)
-    switch (ownerType) {
-        case owner_type.black:
-            return middle_image_black
-        case owner_type.white:
-            return middle_image_white
-        default:
-            if (cellType === cell_type.middlePoint)
-                return middle_point
-            else
-                return middle_image
-    }
+const rightBorder = {
+    black: right_border_black,
+    blackLast: right_border_black_last,
+    white: right_border_white,
+    whiteLast: right_border_white_last,
+    empty: right_border
+}
+
+const middle = {
+    black: middle_image_black,
+    blackLast: middle_black_last,
+    white: middle_image_white,
+    whiteLast: middle_white_last
+}
+
+const middleMarker = {
+    ...middle,
+    empty: middle_point
+}
+
+const middleNormal = {
+    ...middle,
+    empty: middle_image
 }

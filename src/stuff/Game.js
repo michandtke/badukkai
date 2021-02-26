@@ -114,7 +114,8 @@ function playStuff(styles, setGameState, gameState, setShowKifus) {
             <div className={styles.container}>
                 <div className={styles.board}>
                     <Board rows={gameState.getRows()}
-                           clicked={(x, y) => clicked(x, y, gameState, setGameState)}/>
+                           clicked={(x, y) => clicked(x, y, gameState, setGameState)}
+                           lastMove={gameState.lastMove}/>
                 </div>
                 <GameTree gameState={gameState} setGameState={setGameState}/>
             </div>
