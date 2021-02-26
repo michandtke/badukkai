@@ -1,3 +1,4 @@
+import middle_point from '../resources/middle_point.png'
 import middle_image from '../resources/middle_image.png'
 import middle_image_black from '../resources/middle_image_black.png'
 import middle_image_white from '../resources/middle_image_white.png'
@@ -45,10 +46,10 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function ImageProvider(props) {
+export default function ImageProvider({size, ownerType, cellType, clicked}) {
     const classes = useStyles();
-    const imageClass = calcImageClass(classes, props.size)
-    return (<img src={image(props.ownerType, props.cellType)} className={imageClass} onClick={props.clicked} alt={"Hello"}/>)
+    const imageClass = calcImageClass(classes, size)
+    return (<img src={image(ownerType, cellType)} className={imageClass} onClick={clicked} alt={"Hello"}/>)
 }
 
 function calcImageClass(classes, size) {
@@ -78,8 +79,9 @@ function image(ownerType, cellType) {
         case cell_type.right_border:
             return rightBorder(ownerType)
         case cell_type.middle:
+        case cell_type.middlePoint:
         default:
-            return middle(ownerType)
+            return middle(ownerType, cellType)
     }
 }
 
@@ -171,13 +173,17 @@ function rightBorder(ownerType) {
     }
 }
 
-function middle(ownerType) {
+function middle(ownerType, cellType) {
+    console.log(cellType)
     switch (ownerType) {
         case owner_type.black:
             return middle_image_black
         case owner_type.white:
             return middle_image_white
         default:
-            return middle_image
+            if (cellType === cell_type.middlePoint)
+                return middle_point
+            else
+                return middle_image
     }
 }

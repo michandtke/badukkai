@@ -7,5 +7,6 @@ export const cell_type = {
     "lower_border": 6,
     "left_border": 7,
     "right_border": 8,
-    "middle": 9
+    "middle": 9,
+    "middlePoint": 10
 }

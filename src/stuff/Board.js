@@ -8,7 +8,7 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function Board(props) {
+export default function Board({rows, clicked}) {
     const classes = useStyles();
 
     let rowNumber = 0
@@ -16,12 +16,12 @@ export default function Board(props) {
     return (
         <table cellSpacing={0}>
             <tbody>
-            {props.rows.map((row) => (
+            {rows.map((row) => (
                 <tr className={classes.cell} key={rowNumber = rowNumber + 1}>
                     {row.map((cell) => (
                         <td className={classes.cell} key={cell.id}>
-                            <ImageProvider ownerType={cell.owner} cellType={cell.cellType} size={props.rows.length}
-                                           key={cell.id} clicked={() => props.clicked(cell.x, cell.y)}/>
+                            <ImageProvider ownerType={cell.owner} cellType={cell.cellType} size={rows.length}
+                                           key={cell.id} clicked={() => clicked(cell.x, cell.y)}/>
                         </td>
                     ))}
                 </tr>
