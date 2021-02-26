@@ -43,7 +43,7 @@ const useStyles = makeStyles((theme) => ({
 }));
 
 export default function Game() {
-    const [gameState, setGameState] = useState(new GameState().newGame(build_rows(3)))
+    const [gameState, setGameState] = useState(new GameState().newGame(build_rows(9)))
     const [showKifus, setShowKifus] = useState(false)
     const downPress = useKeyPress("ArrowDown");
     const rightPress = useKeyPress("ArrowRight");
@@ -81,7 +81,7 @@ function playStuff(styles, setGameState, gameState, setShowKifus) {
     }
     return (<div>
         <div className={styles.header}>
-            Hello, my friend. Have a great game. And please, have fun playing it.
+            Hello there. Have a great game. And please, have fun playing it.
             <br/>
             <Button onClick={() => setGameState(gameState.pass())} variant="contained"
                     color="primary">PASS</Button>
