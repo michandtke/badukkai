@@ -41,7 +41,7 @@ export default class SGFParser {
                 game = game.pass()
         }
 
-        return game
+        return game.ancestor
     }
 
     black(move, game) {

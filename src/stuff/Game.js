@@ -50,8 +50,6 @@ export default function Game() {
     const leftPress = useKeyPress("ArrowLeft");
     const upPress = useKeyPress("ArrowUp");
 
-    console.log(showKifus)
-
     useEffect(() => {
         if ((downPress || rightPress) && gameState.getChildren() && gameState.getChildren()[0]) {
             setGameState(gameState.getChildren()[0])

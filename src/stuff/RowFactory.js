@@ -57,10 +57,13 @@ function last_row(board_type) {
 function getMiddleMarker(boardType) {
     switch (boardType) {
         case 9:
+        case "9":
             return [{x: 2, y: 2}, {x: 2, y: 6}, {x: 6, y: 2}, {x: 6, y: 6}, {x: 4, y: 4}]
         case 13:
+        case "13":
             return [{x: 3, y: 3}, {x: 3, y: 9}, {x: 9, y: 3}, {x: 9, y: 9}, {x: 6, y: 6}]
         case 19:
+        case "19":
             return [{x: 3, y: 3}, {x: 15, y: 3}, {x: 3, y: 15}, {x: 15, y: 15}, {x: 9, y: 9}, {x: 9, y: 3},
                 {x: 9, y: 15}, {x: 3, y: 9}, {x: 15, y: 9}]
         default:
