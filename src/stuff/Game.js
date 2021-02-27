@@ -6,9 +6,7 @@ import {owner_type} from "./OwnerType";
 import {makeStyles} from "@material-ui/core/styles";
 import GameTree from "./GameTree";
 import GameState from "./GameState";
-import SGFParser from "../parser/SGFParser";
-import Input from "@material-ui/core/Input";
-import LoadKifu from "./LoadKifu";
+import ListKifus from "../kifus/ListKifus";
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -39,7 +37,6 @@ const useStyles = makeStyles((theme) => ({
     body: {
         height: "70vh"
     }
-
 }));
 
 export default function Game() {
@@ -57,13 +54,13 @@ export default function Game() {
         if ((leftPress || upPress) && gameState.parent) {
             setGameState(gameState.parent)
         }
-    }, [downPress, leftPress, rightPress, upPress]);
+    }, [gameState, downPress, leftPress, rightPress, upPress]);
 
     const styles = useStyles()
 
 
     return (<div>
-        {(showKifus) ? <LoadKifu setShowKifus={setShowKifus}/> : undefined}
+        {(showKifus) ? <ListKifus setShowKifus={setShowKifus} setGameState={setGameState}/> : undefined}
         {(!showKifus) ? playStuff(styles, setGameState, gameState, setShowKifus) : undefined}
     </div>)
 }
@@ -93,8 +90,6 @@ function playStuff(styles, setGameState, gameState, setShowKifus) {
                     onClick={() => newGame(13, setGameState)}>13x13</Button>
             <Button className={styles.newGamer} variant="contained" color="primary"
                     onClick={() => newGame(19, setGameState)}>19x19</Button>
-            <Input type="file" name="file" color="secondary"
-                   onChange={(event) => newGameByFileUploadHandler(event, setGameState)}/>
             <Button variant="contained" color="primary" onClick={() => setShowKifus(true)}>Load Kifu</Button>
             <div className={styles.container}>
                 <div className={stylingBlack}>
@@ -127,22 +122,6 @@ function newGame(size, setGameState) {
 
 function clicked(x, y, gameState, setGameState) {
     setGameState(gameState.addMove(x, y))
-}
-
-function newGameByFileUploadHandler(event, setGameState) {
-    event.preventDefault()
-    const reader = new FileReader()
-    const file = event.target.files[0]
-    if (file) {
-
-        reader.onload = async (e) => {
-            const text = (e.target.result)
-            const game = new SGFParser().parse(text)
-            setGameState(game)
-        };
-
-        reader.readAsText(event.target.files[0])
-    }
 }
 
 const useKeyPress = function (targetKey) {
