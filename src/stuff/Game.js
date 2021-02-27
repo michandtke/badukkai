@@ -7,6 +7,11 @@ import {makeStyles} from "@material-ui/core/styles";
 import GameTree from "./GameTree";
 import GameState from "./GameState";
 import ListKifus from "../kifus/ListKifus";
+import {
+    useWindowSize,
+    useWindowWidth,
+    useWindowHeight,
+} from '@react-hook/window-size/throttled'
 
 const useStyles = makeStyles((theme) => ({
     container: {
@@ -26,16 +31,6 @@ const useStyles = makeStyles((theme) => ({
     current: {},
     inactive: {
         borderColor: "#282c34"
-    },
-    board: {
-        maxWidth: "80%",
-    },
-    header: {
-        height: "28vh",
-        marginTop: "2vh"
-    },
-    body: {
-        height: "70vh"
     }
 }));
 
@@ -46,6 +41,11 @@ export default function Game() {
     const rightPress = useKeyPress("ArrowRight");
     const leftPress = useKeyPress("ArrowLeft");
     const upPress = useKeyPress("ArrowUp");
+    const onlyWidth = useWindowWidth()
+    const onlyHeight = useWindowHeight()
+    console.log(onlyWidth)
+    const fifth = onlyWidth / 5
+    console.log(fifth)
 
     useEffect(() => {
         if ((downPress || rightPress) && gameState.getChildren() && gameState.getChildren()[0]) {
@@ -54,18 +54,27 @@ export default function Game() {
         if ((leftPress || upPress) && gameState.parent) {
             setGameState(gameState.parent)
         }
-    }, [gameState, downPress, leftPress, rightPress, upPress]);
+    }, [downPress, leftPress, rightPress, upPress]);
 
     const styles = useStyles()
 
 
     return (<div>
         {(showKifus) ? <ListKifus setShowKifus={setShowKifus} setGameState={setGameState}/> : undefined}
-        {(!showKifus) ? playStuff(styles, setGameState, gameState, setShowKifus) : undefined}
+        {(!showKifus) ? playStuff(styles, setGameState, gameState, setShowKifus, fifth, onlyHeight) : undefined}
     </div>)
 }
 
-function playStuff(styles, setGameState, gameState, setShowKifus) {
+function playStuff(styles, setGameState, gameState, setShowKifus, fifth, onlyHeight) {
+    const boardWidth = (onlyHeight >= fifth * 3) ? fifth * 3 : onlyHeight
+    return (<div className={styles.container}>
+        <div style={{width: fifth}}>{menu(styles, setGameState, gameState, setShowKifus)}</div>
+        <div style={{width: boardWidth}}>{board(styles, gameState, setGameState, boardWidth)}</div>
+        <div style={{width: fifth}}>{tree(gameState, setGameState)}</div>
+    </div>)
+}
+
+function menu(styles, setGameState, gameState, setShowKifus) {
     let stylingBlack = styles.player
     let stylingWhite = styles.player
 
@@ -76,44 +85,46 @@ function playStuff(styles, setGameState, gameState, setShowKifus) {
         stylingWhite += " " + styles.current
         stylingBlack += " " + styles.inactive
     }
-    return (<div>
-        <div className={styles.header}>
-            Hello there. Have a great game. And please, have fun playing it.
-            <br/>
-            <Button onClick={() => setGameState(gameState.pass())} variant="contained"
-                    color="primary">PASS</Button>
-            <br/>
-            Create a new Game:
-            <Button className={styles.newGamer} variant="contained" color="primary"
-                    onClick={() => newGame(9, setGameState)}>9x9</Button>
-            <Button className={styles.newGamer} variant="contained" color="primary"
-                    onClick={() => newGame(13, setGameState)}>13x13</Button>
-            <Button className={styles.newGamer} variant="contained" color="primary"
-                    onClick={() => newGame(19, setGameState)}>19x19</Button>
-            <Button variant="contained" color="primary" onClick={() => setShowKifus(true)}>Load Kifu</Button>
-            <div className={styles.container}>
-                <div className={stylingBlack}>
-                    {gameState.black.name} ({gameState.black.rank})
-                    <br/>({gameState.capturesBlack})
-                </div>
-                <div className={styles.spacer}/>
-                <div className={stylingWhite}>
-                    {gameState.white.name} ({gameState.white.rank})
-                    <br/>({gameState.capturesWhite})
-                </div>
+
+    return (<div className={styles.header}>
+        <div className={styles.container}>
+            <div className={stylingBlack}>
+                {gameState.black.name} ({gameState.black.rank})
+                <br/>({gameState.capturesBlack})
+            </div>
+            <div className={styles.spacer}/>
+            <div className={stylingWhite}>
+                {gameState.white.name} ({gameState.white.rank})
+                <br/>({gameState.capturesWhite})
             </div>
         </div>
-        <div className={styles.body}>
-            <div className={styles.container}>
-                <div className={styles.board}>
-                    <Board rows={gameState.getRows()}
-                           clicked={(x, y) => clicked(x, y, gameState, setGameState)}
-                           lastMove={gameState.lastMove}/>
-                </div>
-                <GameTree gameState={gameState} setGameState={setGameState}/>
-            </div>
-        </div>
+        Hello there. Have a great game. And please, have fun playing it.
+        <br/>
+        <Button onClick={() => setGameState(gameState.pass())} variant="contained"
+                color="primary">PASS</Button>
+        <br/>
+        Create a new Game:
+        <Button className={styles.newGamer} variant="contained" color="primary"
+                onClick={() => newGame(9, setGameState)}>9x9</Button>
+        <Button className={styles.newGamer} variant="contained" color="primary"
+                onClick={() => newGame(13, setGameState)}>13x13</Button>
+        <Button className={styles.newGamer} variant="contained" color="primary"
+                onClick={() => newGame(19, setGameState)}>19x19</Button>
+        <Button variant="contained" color="primary" onClick={() => setShowKifus(true)}>Load Kifu</Button>
     </div>)
+}
+
+function board(styles, gameState, setGameState, boardSize) {
+    return (<div className={styles.board}>
+        <Board rows={gameState.getRows()}
+               clicked={(x, y) => clicked(x, y, gameState, setGameState)}
+               lastMove={gameState.lastMove}
+               dimensions={boardSize} />
+    </div>)
+}
+
+function tree(gameState, setGameState) {
+    return (<GameTree gameState={gameState} setGameState={setGameState}/>)
 }
 
 function newGame(size, setGameState) {

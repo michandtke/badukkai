@@ -8,8 +8,9 @@ const useStyles = makeStyles((theme) => ({
     }
 }));
 
-export default function Board({rows, clicked, lastMove}) {
+export default function Board({rows, clicked, lastMove, dimensions}) {
     const classes = useStyles();
+    const cellDimensions = dimensions / rows.length
 
     let rowNumber = 0
 
@@ -22,7 +23,8 @@ export default function Board({rows, clicked, lastMove}) {
                         <td className={classes.cell} key={cell.id}>
                             <ImageProvider ownerType={cell.owner} cellType={cell.cellType} size={rows.length}
                                            key={cell.id} clicked={() => clicked(cell.x, cell.y)}
-                                           wasLastMove={cell.x === lastMove.x && cell.y === lastMove.y}/>
+                                           wasLastMove={cell.x === lastMove.x && cell.y === lastMove.y}
+                                           cellDimensions={cellDimensions}/>
                         </td>
                     ))}
                 </tr>

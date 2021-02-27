@@ -50,33 +50,17 @@ import {owner_type} from "./OwnerType";
 import React from "react";
 
 const useStyles = makeStyles((theme) => ({
-    smallImage: {
-        display: "block",
-        height: "3vh"
-    },
-    mediumImage: {
-        display: "block",
-        height: "5vh"
-    },
-    bigImage: {
-        display: "block",
-        height: "7vh"
+    img: {
+        display: "block"
     }
 }));
 
-export default function ImageProvider({size, ownerType, cellType, clicked, wasLastMove}) {
+export default function ImageProvider({size, ownerType, cellType, clicked, wasLastMove, cellDimensions}) {
     const classes = useStyles();
-    const imageClass = calcImageClass(classes, size)
-    return (<img src={image(ownerType, cellType, wasLastMove)} className={imageClass} onClick={clicked} alt={"Hello"}/>)
+    return (<img style={{width: cellDimensions}} src={image(ownerType, cellType, wasLastMove)} className={classes.img}
+                 onClick={clicked} alt={"Hello"}/>)
 }
 
-function calcImageClass(classes, size) {
-    if (!size || size > 18)
-        return classes.smallImage
-    if (size > 12)
-        return classes.mediumImage
-    return classes.bigImage
-}
 
 function image(ownerType, cellType, wasLastMove) {
     switch (cellType) {
