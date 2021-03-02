@@ -1,22 +1,27 @@
 {
   "files": {
     "main.css": "/badukkai/static/css/main.a3718f0b.chunk.css",
-    "main.js": "/badukkai/static/js/main.06411480.chunk.js",
-    "main.js.map": "/badukkai/static/js/main.06411480.chunk.js.map",
-    "runtime-main.js": "/badukkai/static/js/runtime-main.0bf0f865.js",
-    "runtime-main.js.map": "/badukkai/static/js/runtime-main.0bf0f865.js.map",
-    "static/js/2.d6da8a9e.chunk.js": "/badukkai/static/js/2.d6da8a9e.chunk.js",
-    "static/js/2.d6da8a9e.chunk.js.map": "/badukkai/static/js/2.d6da8a9e.chunk.js.map",
-    "static/js/3.a9c1bb0c.chunk.js": "/badukkai/static/js/3.a9c1bb0c.chunk.js",
-    "static/js/3.a9c1bb0c.chunk.js.map": "/badukkai/static/js/3.a9c1bb0c.chunk.js.map",
+    "main.js": "/badukkai/static/js/main.20e43a6d.chunk.js",
+    "main.js.map": "/badukkai/static/js/main.20e43a6d.chunk.js.map",
+    "runtime-main.js": "/badukkai/static/js/runtime-main.8c4851da.js",
+    "runtime-main.js.map": "/badukkai/static/js/runtime-main.8c4851da.js.map",
+    "static/js/2.a4bc4261.chunk.js": "/badukkai/static/js/2.a4bc4261.chunk.js",
+    "static/js/2.a4bc4261.chunk.js.map": "/badukkai/static/js/2.a4bc4261.chunk.js.map",
+    "static/js/3.1f07c02f.chunk.js": "/badukkai/static/js/3.1f07c02f.chunk.js",
+    "static/js/3.1f07c02f.chunk.js.map": "/badukkai/static/js/3.1f07c02f.chunk.js.map",
     "index.html": "/badukkai/index.html",
     "static/css/main.a3718f0b.chunk.css.map": "/badukkai/static/css/main.a3718f0b.chunk.css.map",
-    "static/js/2.d6da8a9e.chunk.js.LICENSE.txt": "/badukkai/static/js/2.d6da8a9e.chunk.js.LICENSE.txt"
+    "static/js/2.a4bc4261.chunk.js.LICENSE.txt": "/badukkai/static/js/2.a4bc4261.chunk.js.LICENSE.txt",
+    "static/media/Game1.3097d307.sgf": "/badukkai/static/media/Game1.3097d307.sgf",
+    "static/media/Game2.f81e9045.sgf": "/badukkai/static/media/Game2.f81e9045.sgf",
+    "static/media/Game3.28fcdb1d.sgf": "/badukkai/static/media/Game3.28fcdb1d.sgf",
+    "static/media/Game4.43dfaff5.sgf": "/badukkai/static/media/Game4.43dfaff5.sgf",
+    "static/media/Game5.9d5f4237.sgf": "/badukkai/static/media/Game5.9d5f4237.sgf"
   },
   "entrypoints": [
-    "static/js/runtime-main.0bf0f865.js",
-    "static/js/2.d6da8a9e.chunk.js",
+    "static/js/runtime-main.8c4851da.js",
+    "static/js/2.a4bc4261.chunk.js",
     "static/css/main.a3718f0b.chunk.css",
-    "static/js/main.06411480.chunk.js"
+    "static/js/main.20e43a6d.chunk.js"
   ]
 }
